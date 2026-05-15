@@ -75,6 +75,30 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Update order status (admin)
+router.put('/:id', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (req.body.status) {
+      order.status = req.body.status;
+      if (req.body.status === 'Delivered') {
+        order.isDelivered = true;
+        order.deliveredAt = Date.now();
+      }
+    }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 // Update order to paid
 router.put('/:id/pay', async (req, res) => {
   try {

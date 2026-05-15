@@ -1,0 +1,71 @@
+═══════════════════════════════════════════════════════════════════
+  🚀 VERCEL DEPLOYMENT COMMANDS - COPY & PASTE THESE
+═══════════════════════════════════════════════════════════════════
+
+STEP 1: Login to Vercel
+────────────────────────────────────────────────────────────────────
+vercel login
+
+
+STEP 2: Deploy to Vercel (Preview)
+────────────────────────────────────────────────────────────────────
+vercel
+
+
+STEP 3: Add MongoDB Connection String
+────────────────────────────────────────────────────────────────────
+vercel env add MONGODB_URI
+
+When prompted, paste your MongoDB Atlas connection string:
+mongodb+srv://username:password@cluster.mongodb.net/ecommerce
+
+
+STEP 4: Add JWT Secret
+────────────────────────────────────────────────────────────────────
+vercel env add JWT_SECRET
+
+When prompted, enter:
+your-super-secret-jwt-key-change-this-in-production-12345
+
+
+STEP 5: Add Node Environment
+────────────────────────────────────────────────────────────────────
+vercel env add NODE_ENV
+
+When prompted, enter:
+production
+
+
+STEP 6: Deploy to Production
+────────────────────────────────────────────────────────────────────
+vercel --prod
+
+
+═══════════════════════════════════════════════════════════════════
+  ✅ DONE! Your e-commerce site will be live!
+═══════════════════════════════════════════════════════════════════
+
+Your site will be available at:
+https://your-project-name.vercel.app
+
+═══════════════════════════════════════════════════════════════════
+  📝 NOTES
+═══════════════════════════════════════════════════════════════════
+
+1. If you don't have MongoDB Atlas yet:
+   → Go to: https://www.mongodb.com/cloud/atlas
+   → Create free account
+   → Create cluster (takes 3-5 minutes)
+   → Get connection string
+
+2. After deployment:
+   → Seed database: POST https://your-app.vercel.app/api/seed
+   → Test API: GET https://your-app.vercel.app/api/health
+   → Open site: https://your-app.vercel.app
+
+3. For automatic deployments:
+   → Push to GitHub
+   → Connect repo in Vercel dashboard
+   → Auto-deploy on every push!
+
+═══════════════════════════════════════════════════════════════════

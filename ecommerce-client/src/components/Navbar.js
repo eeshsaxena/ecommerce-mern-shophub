@@ -27,6 +27,13 @@ function Navbar() {
               <Link to="/orders" className="nav-link">Orders</Link>
             </li>
           )}
+          {user?.role === 'admin' && (
+            <li className="nav-item">
+              <Link to="/admin" className="nav-link" style={{color: '#f59e0b', fontWeight: 'bold'}}>
+                ⚙️ Admin
+              </Link>
+            </li>
+          )}
         </ul>
 
         <div className="nav-actions">
