@@ -1,0 +1,151 @@
+.item-list {
+  margin-top: 20px;
+}
+
+.item-list h2 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.item-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.item-header h3 {
+  color: #333;
+  font-size: 1.3rem;
+  margin: 0;
+  flex: 1;
+}
+
+.item-price {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.item-description {
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.item-quantity {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.item-quantity strong {
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
+
+.btn-delete {
+  background: #f44336;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #da190b;
+  transform: scale(1.05);
+}
+
+.empty-state {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.empty-state h3 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .items-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .item-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+  }
+}

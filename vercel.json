@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "ecommerce-server/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "ecommerce-client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "ecommerce-server/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "ecommerce-client/$1"
+    }
+  ]
+}

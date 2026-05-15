@@ -1,0 +1,21 @@
+{
+  "name": "ecommerce-mern",
+  "version": "1.0.0",
+  "description": "Full-stack E-commerce MERN application",
+  "scripts": {
+    "server": "cd ecommerce-server && npm run dev",
+    "client": "cd ecommerce-client && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-server": "cd ecommerce-server && npm install",
+    "install-client": "cd ecommerce-client && npm install",
+    "install-all": "npm install && npm run install-server && npm run install-client",
+    "build": "cd ecommerce-client && npm run build",
+    "vercel-build": "cd ecommerce-client && npm install && npm run build"
+  },
+  "keywords": ["ecommerce", "mern", "mongodb", "express", "react", "nodejs"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
