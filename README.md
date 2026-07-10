@@ -97,12 +97,17 @@ npm run install-all
      ```
 
 3. **Seed the database with sample products:**
+
+   `POST /api/seed` **deletes every existing product** before inserting the
+   samples, so it is disabled unless `SEED_TOKEN` is set and presented as the
+   `x-seed-token` header.
+
 ```bash
-# Start the server first
+# Start the server first (with SEED_TOKEN set in your .env)
 npm run server
 
 # Then in another terminal, seed the database:
-curl -X POST http://localhost:5000/api/seed
+curl -X POST http://localhost:5000/api/seed -H "x-seed-token: $SEED_TOKEN"
 ```
 
 4. **Run the application:**
@@ -138,40 +143,45 @@ This starts:
 
 ### Utility
 - `GET /api/health` - Health check
-- `POST /api/seed` - Seed database with sample products
+- `POST /api/seed` - Reseed sample products (requires `x-seed-token`; wipes existing products)
 
-## 🌐 Deployment to Vercel
+## 🌐 Deployment
 
-### Automatic Deployment
-
-1. **Install Vercel CLI:**
-```bash
-npm install -g vercel
-```
-
-2. **Login to Vercel:**
-```bash
-vercel login
-```
-
-3. **Deploy:**
-```bash
-vercel --prod
-```
+The only value you must supply is a **MongoDB Atlas connection string**
+(free tier at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)).
 
 ### Environment Variables
 
-Set these in Vercel dashboard:
-- `MONGODB_URI` - Your MongoDB Atlas connection string
-- `JWT_SECRET` - Your JWT secret key
-- `NODE_ENV` - production
+| Variable | Required | Notes |
+|---|---|---|
+| `MONGODB_URI` | yes | Atlas connection string |
+| `JWT_SECRET` | yes | Token signing key. Render generates one automatically. |
+| `SEED_TOKEN` | no | Enables `POST /api/seed`. Leave unset to disable seeding. |
+| `NODE_ENV` | yes | `production` |
 
-### Manual Deployment Steps
+In production the server **refuses to boot** if `MONGODB_URI` or `JWT_SECRET`
+is missing, rather than falling back to an insecure default.
 
-1. Push code to GitHub
-2. Import project in Vercel dashboard
-3. Add environment variables
-4. Deploy!
+### Render (recommended)
+
+`render.yaml` is a ready blueprint. Point Render at this repo and set
+`MONGODB_URI`; `JWT_SECRET` and `SEED_TOKEN` are generated for you. Express
+serves the built React client and the API from one origin.
+
+### Vercel
+
+```bash
+npm install -g vercel && vercel login && vercel --prod
+```
+
+Then set the environment variables above in the Vercel dashboard.
+
+### Docker
+
+```bash
+docker build -t shophub .
+docker run -p 5000:5000 --env-file .env shophub
+```
 
 ## 🛠️ Tech Stack
 

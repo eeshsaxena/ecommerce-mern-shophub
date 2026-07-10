@@ -1,9 +1,22 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Both of these have insecure development fallbacks further down the stack.
+// Refuse to boot in production rather than silently run with a public secret.
+if (isProduction) {
+  const missing = ['MONGODB_URI', 'JWT_SECRET'].filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    console.error(`❌ Missing required environment variable(s): ${missing.join(', ')}`);
+    process.exit(1);
+  }
+}
 
 // Middleware
 app.use(cors());
@@ -17,6 +30,11 @@ const connectDB = async () => {
     console.log('✅ MongoDB connected successfully');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
+    if (isProduction) {
+      // Serving a storefront that silently cannot reach its database is worse
+      // than failing the deploy outright.
+      process.exit(1);
+    }
     console.log('\n⚠️  MongoDB is not running. Please:');
     console.log('   1. Install MongoDB from https://www.mongodb.com/try/download/community');
     console.log('   2. Start MongoDB service');
@@ -36,11 +54,21 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'E-commerce API is running', timestamp: new Date() });
 });
 
-// Seed route for demo data
+// Seed route for demo data.
+// Wipes the product collection, so it must never be callable by the public.
+// Requires SEED_TOKEN to be set and presented as `x-seed-token`.
 app.post('/api/seed', async (req, res) => {
+  const expected = process.env.SEED_TOKEN;
+  if (!expected) {
+    return res.status(403).json({ message: 'Seeding is disabled: SEED_TOKEN is not configured.' });
+  }
+  if (req.get('x-seed-token') !== expected) {
+    return res.status(401).json({ message: 'Invalid seed token.' });
+  }
+
   try {
     const Product = require('./models/Product');
-    
+
     // Clear existing products
     await Product.deleteMany({});
 
@@ -179,14 +207,42 @@ app.post('/api/seed', async (req, res) => {
   }
 });
 
+// Serve the built React client as a single origin with the API.
+// In dev the client runs on its own port and proxies /api here instead.
+const CLIENT_BUILD = path.join(__dirname, '..', 'ecommerce-client', 'build');
+
+if (fs.existsSync(path.join(CLIENT_BUILD, 'index.html'))) {
+  app.use(express.static(CLIENT_BUILD));
+
+  // Client-side routes (/cart, /product/:id, ...) must fall back to index.html.
+  // Anything under /api that reached here is a genuine 404.
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(CLIENT_BUILD, 'index.html'));
+  });
+}
+
+app.use('/api', (req, res) => {
+  res.status(404).json({ message: `No such API route: ${req.method} ${req.originalUrl}` });
+});
+
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: isProduction ? undefined : err.message,
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 E-commerce server running on port ${PORT}`);
-});
+// Only bind a port when run directly (`node index.js`). When this module is
+// imported by a serverless handler, the platform owns the listener.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 E-commerce server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

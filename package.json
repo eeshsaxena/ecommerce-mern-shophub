@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Full-stack E-commerce MERN application",
   "scripts": {
+    "start": "node ecommerce-server/index.js",
     "server": "cd ecommerce-server && npm run dev",
     "client": "cd ecommerce-client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
