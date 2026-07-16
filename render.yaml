@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: shophub
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm run install-all && npm run build
+    startCommand: node ecommerce-server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      # create-react-app promotes lint warnings to build errors when CI=true,
+      # which Render sets by default.
+      - key: CI
+        value: "false"
+      # Set in the Render dashboard. Never commit these.
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SEED_TOKEN
+        generateValue: true

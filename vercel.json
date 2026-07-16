@@ -1,5 +1,10 @@
 {
   "version": 2,
+  "build": {
+    "env": {
+      "CI": "false"
+    }
+  },
   "builds": [
     {
       "src": "ecommerce-server/index.js",
@@ -16,11 +21,14 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "ecommerce-server/index.js"
+      "dest": "/ecommerce-server/index.js"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "ecommerce-client/$1"
+      "dest": "/index.html"
     }
   ]
 }
